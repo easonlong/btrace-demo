@@ -1,12 +1,16 @@
 package com.eason;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Counter {
 
-	private int count = 0;
+	private AtomicInteger count = new AtomicInteger();
 
-	public int inc(int num) throws Exception {
-		count += num;
-		Thread.sleep(1000);
-		return count;
+	public Integer inc(int num) throws Exception {
+		return count.addAndGet(num);
+	}
+
+	public Integer dec(int num) throws Exception {
+		return count.addAndGet(-num);
 	}
 }

@@ -1,23 +1,23 @@
 package com.eason.btrace;
 
 import static com.sun.btrace.BTraceUtils.*;
-
+import com.sun.btrace.AnyType;
 import com.sun.btrace.annotations.*;
 
 @BTrace
 public class BtraceScript {
 
-	@TLS
-	private static long startTime = 0;
-
-	@OnMethod(clazz = "com.eason.Counter", method = "inc", location = @Location(Kind.ENTRY))
-	public static void start() {
-		startTime = timeMillis();
+	@OnMethod(clazz = "/com.eason.*/", method = "/.*/", location = @Location(Kind.ENTRY))
+	public static void logArgs(@ProbeClassName String pcn, @ProbeMethodName String pmn, AnyType[] args) {
+		printArray(args);
 	}
 
-	@OnMethod(clazz = "com.eason.Counter", method = "inc", location = @Location(Kind.RETURN))
-	public static void end() {
-		long time = timeMillis() - startTime;
-		println(concat("inc cost", str(time)));
+	@OnMethod(clazz = "/com.eason.*/", method = "/.*/", location = @Location(Kind.RETURN))
+	public static void methodEnd(@ProbeClassName String pcn, @ProbeMethodName String pmn, @Return Object i,
+	        @Duration long duration) {
+		String method = strcat(strcat(pcn, "."), pmn);
+		String returnValue = strcat(", Return value:", str(i));
+		String cost = strcat(", Call cost:", str(duration));
+		println(strcat(strcat(method, returnValue), cost));
 	}
 }

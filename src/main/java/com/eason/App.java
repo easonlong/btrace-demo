@@ -6,9 +6,37 @@ package com.eason;
  */
 public class App {
 	public static void main(String[] args) throws Exception {
-		Counter counter = new Counter();
+		final Counter counter = new Counter();
+		new Thread(new Runnable() {
+
+			public void run() {
+				while (true) {
+					try {
+	                    counter.inc(1);
+	                    Thread.sleep(1000);
+                    } catch (Exception e) {
+	                    e.printStackTrace();
+                    }
+				}
+
+			}
+		}).start();
+		new Thread(new Runnable() {
+
+			public void run() {
+				while (true) {
+					try {
+	                    counter.dec(1);
+	                    Thread.sleep(1000);
+                    } catch (Exception e) {
+	                    e.printStackTrace();
+                    }
+				}
+
+			}
+		}).start();
 		while (true) {
-			System.out.println(counter.inc(1));
+			Thread.sleep(10000);
 		}
 	}
 }
